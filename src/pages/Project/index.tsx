@@ -1,3 +1,4 @@
+import useModalState from '@/hooks/useModalState';
 import {
   createApiProjectPost,
   deleteApiProject_pk_delete,
@@ -21,9 +22,7 @@ import { memo, useRef, useState } from 'react';
 const Project = () => {
   const actionRef = useRef<ActionType>();
 
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const [modalType, setModalType] = useState('新建');
+  const { isOpen, setModalOpen, action } = useModalState();
 
   const [form] = Form.useForm<API.ProjectCreate>();
 
@@ -79,11 +78,9 @@ const Project = () => {
         <a
           key="edit"
           onClick={() => {
-            setModalType('编辑');
-            setModalOpen(true);
+            setModalOpen(true, '编辑');
             setCurrentRecord(record);
             form.setFieldsValue(record);
-            console.log(record);
           }}
         >
           编辑
@@ -98,6 +95,7 @@ const Project = () => {
               cancelText: '取消',
               onOk: async () => {
                 await deleteApiProject_pk_delete({ pk: record.id });
+                actionRef?.current?.reload();
               },
             });
           }}
@@ -110,7 +108,7 @@ const Project = () => {
 
   const handleFinsh = async (values: API.ProjectCreate) => {
     let res;
-    if (modalType === '新建') {
+    if (action === '新建') {
       res = await createApiProjectPost(values);
     } else {
       res = await updateApiProject_pk_put({ pk: currentRecord?.id as number }, values);
@@ -140,8 +138,8 @@ const Project = () => {
 
       {/* modal */}
       <ModalForm
-        open={modalOpen}
-        title={`${modalType}项目`}
+        open={isOpen}
+        title={`${action}项目`}
         width={400}
         form={form}
         style={{ textAlign: 'center' }}
