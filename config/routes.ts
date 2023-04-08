@@ -17,13 +17,19 @@ export default [
   },
   {
     icon: 'Codepen',
-    name: '项目管理',
+    name: '项目',
     path: '/project',
     component: './Project',
   },
   {
+    icon: 'Api',
+    name: 'API',
+    path: '/interface',
+    component: './Interface',
+  },
+  {
     icon: 'Setting',
-    name: '配置中心',
+    name: '配置',
     path: '/config',
     component: './Config',
   },
